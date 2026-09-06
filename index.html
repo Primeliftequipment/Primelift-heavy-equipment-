@@ -139,11 +139,15 @@
           <div><span>•</span> Destination</div>
         </div>
       </div>
-      <form onsubmit="event.preventDefault(); alert('Thank you. Please connect your email or WhatsApp details to this form before publishing.');">
-        <input class="field" type="text" placeholder="Your name" required>
-        <input class="field" type="email" placeholder="Your email" required>
-        <input class="field" type="text" placeholder="Equipment you need">
-        <textarea class="field" placeholder="Tell us what you are looking for"></textarea>
+      <div style="margin-top:20px;display:flex;gap:12px;flex-wrap:wrap;grid-column:1 / -1;justify-content:center">
+        <a class="btn primary" href="mailto:zeldawilson808@gmail.com?subject=PrimeLift%20Heavy%20Equipment%20Inquiry">EMAIL PRIMELIFT</a>
+        <a class="btn secondary" href="https://www.facebook.com/share/1Hnn9pudBw/" target="_blank" rel="noopener">VISIT OUR FACEBOOK</a>
+      </div>
+      <form onsubmit="sendInquiry(event)">
+        <input id="customerName" class="field" type="text" placeholder="Your name" required>
+        <input id="customerEmail" class="field" type="email" placeholder="Your email" required>
+        <input id="equipmentNeeded" class="field" type="text" placeholder="Equipment you need">
+        <textarea id="customerMessage" class="field" placeholder="Tell us what you are looking for"></textarea>
         <button class="btn primary" type="submit" style="border:0;cursor:pointer">SEND REQUEST</button>
       </form>
     </div>
@@ -154,5 +158,17 @@
 <footer>
   <p>© 2026 <b>PrimeLift Heavy Equipment</b>. Fairly Used Heavy Equipment & Machinery.</p>
 </footer>
+<script>
+function sendInquiry(event){
+  event.preventDefault();
+  const name=document.getElementById('customerName').value.trim();
+  const email=document.getElementById('customerEmail').value.trim();
+  const equipment=document.getElementById('equipmentNeeded').value.trim();
+  const message=document.getElementById('customerMessage').value.trim();
+  const subject=encodeURIComponent('PrimeLift Heavy Equipment Inquiry');
+  const body=encodeURIComponent('Name: '+name+'\nCustomer email: '+email+'\nEquipment needed: '+equipment+'\n\nMessage:\n'+message);
+  window.location.href='mailto:zeldawilson808@gmail.com?subject='+subject+'&body='+body;
+}
+</script>
 </body>
 </html>
