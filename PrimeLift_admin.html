@@ -4,144 +4,813 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>PrimeLift Admin</title>
+
 <style>
-*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:#f3f4f6;color:#111827}
-.wrap{max-width:900px;margin:auto;padding:24px}
-header{background:#111827;color:#fff;padding:22px 0}h1{margin:0;font-size:28px}
-.card{background:#fff;border-radius:14px;padding:22px;margin:20px 0;box-shadow:0 4px 18px rgba(0,0,0,.08)}
-label{display:block;font-weight:700;margin:14px 0 6px}input,select,textarea{width:100%;padding:12px;border:1px solid #d1d5db;border-radius:8px;font-size:16px}textarea{min-height:120px;resize:vertical}
-button{border:0;border-radius:8px;padding:12px 18px;font-weight:700;cursor:pointer;background:#111827;color:#fff;margin-top:16px}
-button.secondary{background:#6b7280}.hidden{display:none}.msg{margin-top:14px;padding:12px;border-radius:8px;background:#eef2ff}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}@media(max-width:650px){.grid{grid-template-columns:1fr}}
-.small{color:#6b7280;font-size:14px}.danger{color:#b91c1c}
+*{box-sizing:border-box}
+
+body{
+  margin:0;
+  font-family:Arial,sans-serif;
+  background:#f3f4f6;
+  color:#111827
+}
+
+.wrap{
+  max-width:900px;
+  margin:auto;
+  padding:24px
+}
+
+header{
+  background:#111827;
+  color:#fff;
+  padding:22px 0
+}
+
+h1{
+  margin:0;
+  font-size:28px
+}
+
+.card{
+  background:#fff;
+  border-radius:14px;
+  padding:22px;
+  margin:20px 0;
+  box-shadow:0 4px 18px rgba(0,0,0,.08)
+}
+
+label{
+  display:block;
+  font-weight:700;
+  margin:14px 0 6px
+}
+
+input,select,textarea{
+  width:100%;
+  padding:12px;
+  border:1px solid #d1d5db;
+  border-radius:8px;
+  font-size:16px
+}
+
+textarea{
+  min-height:120px;
+  resize:vertical
+}
+
+button{
+  border:0;
+  border-radius:8px;
+  padding:12px 18px;
+  font-weight:700;
+  cursor:pointer;
+  background:#111827;
+  color:#fff;
+  margin-top:16px
+}
+
+button.secondary{
+  background:#6b7280
+}
+
+.hidden{
+  display:none
+}
+
+.msg{
+  margin-top:14px;
+  padding:12px;
+  border-radius:8px;
+  background:#eef2ff
+}
+
+.grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:14px
+}
+
+.small{
+  color:#6b7280;
+  font-size:14px
+}
+
+.preview{
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+  margin-top:12px
+}
+
+.preview img{
+  width:100px;
+  height:75px;
+  object-fit:cover;
+  border-radius:8px;
+  border:1px solid #d1d5db
+}
+
+.filebox{
+  background:#f9fafb;
+  padding:14px;
+  border-radius:10px;
+  margin-top:10px
+}
+
+@media(max-width:650px){
+  .grid{
+    grid-template-columns:1fr
+  }
+}
 </style>
 </head>
+
 <body>
-<header><div class="wrap"><h1>PrimeLift Heavy Equipment — Admin</h1></div></header>
+
+<header>
+<div class="wrap">
+<h1>PrimeLift Heavy Equipment — Admin</h1>
+</div>
+</header>
+
 <main class="wrap">
 
 <section id="loginCard" class="card">
+
 <h2>Admin Login</h2>
-<p class="small">Use the PrimeLift admin email and password you created in Supabase.</p>
+
+<p class="small">
+Use the PrimeLift admin email and password you created in Supabase.
+</p>
+
 <label>Email</label>
-<input id="email" type="email" autocomplete="username" value="zeldawilson808@gmail.com">
+<input
+  id="email"
+  type="email"
+  autocomplete="username"
+  value="zeldawilson808@gmail.com"
+>
+
 <label>Password</label>
-<input id="password" type="password" autocomplete="current-password">
+<input
+  id="password"
+  type="password"
+  autocomplete="current-password"
+>
+
 <button id="loginBtn">LOG IN</button>
+
 <div id="loginMsg" class="msg hidden"></div>
+
 </section>
 
+
 <section id="dashboard" class="hidden">
+
 <div class="card">
+
 <h2>Add Equipment</h2>
-<p class="small">Add a machine and one main photo. We can expand this to multiple photos after the first version is working.</p>
+
+<p class="small">
+Add your machine details, multiple photos and an optional video.
+</p>
+
+
 <div class="grid">
-<div><label>Category</label>
+
+<div>
+<label>Category</label>
+
 <select id="category">
-<option>Excavators</option><option>Wheel Loaders</option><option>Bulldozers</option>
-<option>Forklifts</option><option>Backhoe Loaders</option><option>Other Equipment</option>
-</select></div>
-<div><label>Make</label><input id="make" placeholder="e.g. Caterpillar"></div>
-<div><label>Model</label><input id="model" placeholder="e.g. 320D"></div>
-<div><label>Year</label><input id="year" type="number" placeholder="e.g. 2019"></div>
-<div><label>Hours</label><input id="hours" type="number" placeholder="e.g. 5200"></div>
-<div><label>Price</label><input id="price" type="number" step="0.01" placeholder="e.g. 85000"></div>
+
+<option>Excavators</option>
+<option>Wheel Loaders</option>
+<option>Bulldozers</option>
+<option>Forklifts</option>
+<option>Backhoe Loaders</option>
+<option>Other Equipment</option>
+
+</select>
 </div>
-<label>Condition</label><input id="condition" placeholder="e.g. Good / Very Good">
-<label>Description</label><textarea id="description" placeholder="Describe the machine, specifications and availability"></textarea>
-<label>Main Photo</label><input id="photo" type="file" accept="image/*">
-<button id="saveBtn">SAVE EQUIPMENT</button>
-<button id="logoutBtn" class="secondary">LOG OUT</button>
+
+
+<div>
+<label>Make</label>
+<input
+  id="make"
+  placeholder="e.g. Hyundai"
+>
+</div>
+
+
+<div>
+<label>Model</label>
+<input
+  id="model"
+  placeholder="e.g. HX480AL"
+>
+</div>
+
+
+<div>
+<label>Year</label>
+<input
+  id="year"
+  type="number"
+  placeholder="e.g. 2022"
+>
+</div>
+
+
+<div>
+<label>Hours</label>
+<input
+  id="hours"
+  type="number"
+  placeholder="e.g. 5018"
+>
+</div>
+
+
+<div>
+<label>Price (USD)</label>
+<input
+  id="price"
+  type="number"
+  step="0.01"
+  placeholder="e.g. 215000"
+>
+</div>
+
+</div>
+
+
+<label>Condition</label>
+
+<input
+  id="condition"
+  placeholder="e.g. Fairly Used / Very Good"
+/>
+
+
+<label>Description</label>
+
+<textarea
+  id="description"
+  placeholder="Describe the machine, specifications and availability"
+></textarea>
+
+
+<div class="filebox">
+
+<label>Equipment Photos</label>
+
+<p class="small">
+Select multiple photos. The first photo will be used as the main listing photo.
+</p>
+
+<input
+  id="photos"
+  type="file"
+  accept="image/*"
+  multiple
+>
+
+<div id="photoPreview" class="preview"></div>
+
+</div>
+
+
+<div class="filebox">
+
+<label>Equipment Video</label>
+
+<p class="small">
+Optional. You can add one video showing the machine working.
+</p>
+
+<input
+  id="video"
+  type="file"
+  accept="video/*"
+>
+
+<div id="videoName" class="small"></div>
+
+</div>
+
+
+<button id="saveBtn">
+SAVE EQUIPMENT
+</button>
+
+<button id="logoutBtn" class="secondary">
+LOG OUT
+</button>
+
 <div id="saveMsg" class="msg hidden"></div>
+
 </div>
+
 </section>
 
 </main>
 
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <script>
+
 /*
-  PRIME LIFT CONFIGURATION
-  Replace ONLY the two placeholder strings below.
-  Never put a sb_secret_ key here.
+ PRIME LIFT CONFIGURATION
+
+ Keep your Supabase URL and publishable key here.
+
+ NEVER put an sb_secret_ key in this file.
 */
-const SUPABASE_URL = "https://lxxukddkahjczhwgjnrd.supabase.co";
-const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_A2DVs1oC_i1qPAOMC2I7zA_CzihS5gf";
 
-const client = supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
-const $ = id => document.getElementById(id);
+const SUPABASE_URL =
+"https://lxxukddkahjczhwgjnrd.supabase.co";
 
-function show(el, text, isError=false){
+const SUPABASE_PUBLISHABLE_KEY =
+"sb_publishable_A2DVs1oC_i1qPAOMC2I7zA_CzihS5gf";
+
+
+const client =
+supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_PUBLISHABLE_KEY
+);
+
+
+const $ = id =>
+document.getElementById(id);
+
+
+function show(el,text,isError=false){
+
   el.classList.remove("hidden");
-  el.textContent = text;
-  el.style.background = isError ? "#fee2e2" : "#eef2ff";
+
+  el.textContent=text;
+
+  el.style.background =
+    isError ? "#fee2e2" : "#eef2ff";
 }
+
+
+/* ADMIN CHECK */
 
 async function checkAdmin(){
-  const {data:{user}} = await client.auth.getUser();
-  if(!user){ $("loginCard").classList.remove("hidden"); $("dashboard").classList.add("hidden"); return false; }
-  const {data,error} = await client.from("admin_users").select("user_id").eq("user_id",user.id).maybeSingle();
-  if(error || !data){
-    await client.auth.signOut();
-    show($("loginMsg"), "This account is not authorized as a PrimeLift admin.", true);
+
+  const {
+    data:{user}
+  } = await client.auth.getUser();
+
+  if(!user){
+
+    $("loginCard").classList.remove("hidden");
+
+    $("dashboard").classList.add("hidden");
+
     return false;
   }
-  $("loginCard").classList.add("hidden"); $("dashboard").classList.remove("hidden"); return true;
+
+
+  const {
+    data,
+    error
+  } =
+  await client
+    .from("admin_users")
+    .select("user_id")
+    .eq("user_id",user.id)
+    .maybeSingle();
+
+
+  if(error || !data){
+
+    await client.auth.signOut();
+
+    show(
+      $("loginMsg"),
+      "This account is not authorized as a PrimeLift admin.",
+      true
+    );
+
+    return false;
+  }
+
+
+  $("loginCard").classList.add("hidden");
+
+  $("dashboard").classList.remove("hidden");
+
+  return true;
 }
 
+
+/* LOGIN */
+
 $("loginBtn").onclick = async () => {
-  show($("loginMsg"), "Signing in...");
-  const {error} = await client.auth.signInWithPassword({
-    email: $("email").value.trim(),
-    password: $("password").value
+
+  show(
+    $("loginMsg"),
+    "Signing in..."
+  );
+
+
+  const {error} =
+  await client.auth.signInWithPassword({
+
+    email:
+      $("email").value.trim(),
+
+    password:
+      $("password").value
+
   });
-  if(error){ show($("loginMsg"), error.message, true); return; }
+
+
+  if(error){
+
+    show(
+      $("loginMsg"),
+      error.message,
+      true
+    );
+
+    return;
+  }
+
+
   await checkAdmin();
+
 };
 
-$("logoutBtn").onclick = async () => { await client.auth.signOut(); location.reload(); };
 
-$("saveBtn").onclick = async () => {
-  const saveMsg = $("saveMsg");
-  show(saveMsg, "Saving equipment...");
-  const photo = $("photo").files[0];
-  let image_url = null;
+/* LOGOUT */
 
-  try {
-    if(photo){
-      const safeName = photo.name.toLowerCase().replace(/[^a-z0-9._-]/g,"-");
-      const path = Date.now() + "-" + crypto.randomUUID() + "-" + safeName;
-      const {error:uploadError} = await client.storage.from("equipment-images").upload(path, photo, {upsert:false});
-      if(uploadError) throw uploadError;
-      const {data:urlData} = client.storage.from("equipment-images").getPublicUrl(path);
-      image_url = urlData.publicUrl;
+$("logoutBtn").onclick =
+async () => {
+
+  await client.auth.signOut();
+
+  location.reload();
+
+};
+
+
+/* PHOTO PREVIEW */
+
+$("photos").addEventListener(
+"change",
+function(){
+
+  const preview =
+    $("photoPreview");
+
+  preview.innerHTML = "";
+
+
+  Array.from(this.files).forEach(
+    file => {
+
+      const img =
+        document.createElement("img");
+
+      img.src =
+        URL.createObjectURL(file);
+
+      preview.appendChild(img);
+
+    }
+  );
+
+});
+
+
+/* VIDEO NAME */
+
+$("video").addEventListener(
+"change",
+function(){
+
+  if(this.files[0]){
+
+    $("videoName").textContent =
+      "Selected video: " +
+      this.files[0].name;
+
+  }else{
+
+    $("videoName").textContent = "";
+
+  }
+
+});
+
+
+/* UPLOAD FILE */
+
+async function uploadFile(file,folder){
+
+  const safeName =
+    file.name
+      .toLowerCase()
+      .replace(
+        /[^a-z0-9._-]/g,
+        "-"
+      );
+
+
+  const path =
+    folder +
+    "/" +
+    Date.now() +
+    "-" +
+    crypto.randomUUID() +
+    "-" +
+    safeName;
+
+
+  const {
+    error:uploadError
+  } =
+  await client
+    .storage
+    .from("equipment-images")
+    .upload(
+      path,
+      file,
+      {
+        upsert:false
+      }
+    );
+
+
+  if(uploadError)
+    throw uploadError;
+
+
+  const {
+    data:urlData
+  } =
+  client
+    .storage
+    .from("equipment-images")
+    .getPublicUrl(path);
+
+
+  return urlData.publicUrl;
+
+}
+
+
+/* SAVE EQUIPMENT */
+
+$("saveBtn").onclick =
+async () => {
+
+  const saveMsg =
+    $("saveMsg");
+
+
+  try{
+
+    show(
+      saveMsg,
+      "Saving equipment..."
+    );
+
+
+    const photos =
+      Array.from(
+        $("photos").files
+      );
+
+
+    const video =
+      $("video").files[0];
+
+
+    const make =
+      $("make").value.trim();
+
+
+    const model =
+      $("model").value.trim();
+
+
+    if(!make || !model){
+
+      throw new Error(
+        "Make and model are required."
+      );
+
     }
 
+
+    if(photos.length === 0){
+
+      throw new Error(
+        "Please select at least one equipment photo."
+      );
+
+    }
+
+
+    /* UPLOAD PHOTOS */
+
+    show(
+      saveMsg,
+      "Uploading equipment photos..."
+    );
+
+
+    const photoUrls = [];
+
+
+    for(
+      const photo of photos
+    ){
+
+      const url =
+        await uploadFile(
+          photo,
+          "equipment"
+        );
+
+      photoUrls.push(url);
+
+    }
+
+
+    /* UPLOAD VIDEO */
+
+    let video_url = null;
+
+
+    if(video){
+
+      show(
+        saveMsg,
+        "Uploading equipment video..."
+      );
+
+
+      video_url =
+        await uploadFile(
+          video,
+          "videos"
+        );
+
+    }
+
+
+    /* CREATE EQUIPMENT */
+
+    show(
+      saveMsg,
+      "Creating equipment listing..."
+    );
+
+
     const row = {
-      category: $("category").value,
-      make: $("make").value.trim(),
-      model: $("model").value.trim(),
-      year: $("year").value ? Number($("year").value) : null,
-      hours: $("hours").value ? Number($("hours").value) : null,
-      price: $("price").value ? Number($("price").value) : null,
-      condition: $("condition").value.trim() || null,
-      description: $("description").value.trim() || null,
-      image_url
+
+      category:
+        $("category").value,
+
+      make:
+        make,
+
+      model:
+        model,
+
+      year:
+        $("year").value
+          ? Number($("year").value)
+          : null,
+
+      hours:
+        $("hours").value
+          ? Number($("hours").value)
+          : null,
+
+      price:
+        $("price").value
+          ? Number($("price").value)
+          : null,
+
+      condition:
+        $("condition").value.trim()
+          || null,
+
+      description:
+        $("description").value.trim()
+          || null,
+
+      image_url:
+        photoUrls[0],
+
+      video_url:
+        video_url
+
     };
 
-    if(!row.make || !row.model) throw new Error("Make and model are required.");
 
-    const {error} = await client.from("equipment").insert(row);
-    if(error) throw error;
+    const {
+      data:equipment,
+      error:equipmentError
+    } =
+    await client
+      .from("equipment")
+      .insert(row)
+      .select()
+      .single();
 
-    show(saveMsg, "Equipment saved successfully.");
-    ["make","model","year","hours","price","condition","description","photo"].forEach(id => $(id).value = "");
-  } catch(err) {
-    show(saveMsg, err.message || "Something went wrong.", true);
+
+    if(equipmentError)
+      throw equipmentError;
+
+
+    /* SAVE ALL PHOTO URLS */
+
+    show(
+      saveMsg,
+      "Saving photo gallery..."
+    );
+
+
+    const imageRows =
+      photoUrls.map(
+        (url,index) => ({
+
+          equipment_id:
+            equipment.id,
+
+          image_url:
+            url,
+
+          sort_order:
+            index
+
+        })
+      );
+
+
+    const {
+      error:imageError
+    } =
+    await client
+      .from("equipment_images")
+      .insert(imageRows);
+
+
+    if(imageError)
+      throw imageError;
+
+
+    /* SUCCESS */
+
+    show(
+      saveMsg,
+      "Equipment saved successfully with photos and video."
+    );
+
+
+    $("make").value = "";
+    $("model").value = "";
+    $("year").value = "";
+    $("hours").value = "";
+    $("price").value = "";
+    $("condition").value = "";
+    $("description").value = "";
+    $("photos").value = "";
+    $("video").value = "";
+    $("photoPreview").innerHTML = "";
+    $("videoName").textContent = "";
+
+
+  }catch(err){
+
+    show(
+      saveMsg,
+      err.message ||
+      "Something went wrong.",
+      true
+    );
+
   }
+
 };
 
+
+/* START */
+
 checkAdmin();
+
 </script>
+
 </body>
-</html>
+  </html>
