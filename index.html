@@ -43,7 +43,20 @@
     textarea{min-height:130px;resize:vertical}
     footer{padding:30px 22px;text-align:center;color:#888;border-top:1px solid #292929;font-size:14px}
     footer b{color:var(--gold)}
-    @media(max-width:800px){nav ul{display:none}.grid,.about-grid,.contact-grid{grid-template-columns:1fr}.hero{min-height:70vh}.hero-inner{padding-top:60px}section{padding:60px 18px}}
+
+    .category-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+    .category-card{background:var(--dark);border:1px solid #2a2a2a;border-radius:8px;padding:25px;color:var(--white);text-align:left;cursor:pointer;font:inherit;transition:.2s}
+    .category-card:hover,.category-card.active{border-color:var(--gold);transform:translateY(-2px)}
+    .category-card h3{font-size:21px}.category-card p{color:var(--gray);margin-top:6px}
+    .equipment-status{text-align:center;color:var(--gray);margin:36px 0 18px}
+    .listing-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+    .gallery-thumbs{display:flex;gap:7px;padding:8px;overflow-x:auto;background:#080808}.gallery-thumbs img{width:58px;height:44px;object-fit:cover;border-radius:4px;cursor:pointer;border:1px solid #444;flex:0 0 auto}.gallery-thumbs img:hover{border-color:var(--gold)}
+    .listing{background:var(--dark);border:1px solid #2a2a2a;border-radius:8px;overflow:hidden}
+    .listing-media{position:relative;background:#080808;aspect-ratio:16/10;overflow:hidden}
+    .listing-media img{width:100%;height:100%;object-fit:cover;display:block}
+    .listing-body{padding:20px}.listing-body h3{font-size:22px}.listing-meta{color:var(--gray);font-size:14px;margin:8px 0}.listing-price{color:var(--gold);font-size:20px;font-weight:900;margin:10px 0}.listing-condition{display:inline-block;border:1px solid #555;border-radius:999px;padding:4px 10px;font-size:12px;font-weight:700;margin-bottom:10px}.listing-description{color:#ccc;font-size:14px;margin-top:10px}.listing-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}.mini-btn{padding:10px 14px;border-radius:5px;background:var(--gold);color:#111;font-weight:900;font-size:13px}.mini-btn.secondary{border:1px solid #777;background:transparent;color:white}.listing-video{width:100%;margin-top:14px;border-radius:5px;background:#000}
+    @media(max-width:800px){nav ul{display:none}.grid,.about-grid,.contact-grid,.category-grid,.listing-grid{grid-template-columns:1fr}.hero{min-height:70vh}.hero-inner{padding-top:60px}section{padding:60px 18px}}
+
   </style>
 </head>
 <body>
@@ -80,14 +93,18 @@
       <h2>Our Equipment</h2>
       <p>Quality fairly used machinery for construction, earthmoving and industrial work.</p>
     </div>
-    <div class="grid">
-      <div class="card"><div class="icon">🚜</div><h3>Excavators</h3><p>Fairly used excavators in different sizes and specifications.</p></div>
-      <div class="card"><div class="icon">🏗️</div><h3>Wheel Loaders</h3><p>Reliable used loaders for material handling and construction jobs.</p></div>
-      <div class="card"><div class="icon">🛠️</div><h3>Bulldozers</h3><p>Heavy-duty machines ready for demanding earthmoving work.</p></div>
-      <div class="card"><div class="icon">🏋️</div><h3>Forklifts</h3><p>Used lifting equipment for warehouses, yards and industrial operations.</p></div>
-      <div class="card"><div class="icon">⬆️</div><h3>Boom Lifts</h3><p>Access equipment for lifting personnel and materials at height.</p></div>
-      <div class="card"><div class="icon">🚧</div><h3>Other Equipment</h3><p>Ask us about other fairly used heavy equipment and machinery.</p></div>
+    <div class="category-grid">
+      <button class="category-card active" data-category="All" type="button"><div class="icon">🚜</div><h3>All Equipment</h3><p>Browse all currently available machines.</p></button>
+      <button class="category-card" data-category="Excavators" type="button"><div class="icon">🚜</div><h3>Excavators</h3><p>Fairly used excavators in different sizes and specifications.</p></button>
+      <button class="category-card" data-category="Wheel Loaders" type="button"><div class="icon">🏗️</div><h3>Wheel Loaders</h3><p>Reliable used loaders for material handling and construction jobs.</p></button>
+      <button class="category-card" data-category="Bulldozers" type="button"><div class="icon">🛠️</div><h3>Bulldozers</h3><p>Heavy-duty machines ready for demanding earthmoving work.</p></button>
+      <button class="category-card" data-category="Forklifts" type="button"><div class="icon">🏋️</div><h3>Forklifts</h3><p>Used lifting equipment for warehouses, yards and industrial operations.</p></button>
+      <button class="category-card" data-category="Backhoe Loaders" type="button"><div class="icon">🚧</div><h3>Backhoe Loaders</h3><p>Versatile machines for digging, loading and construction work.</p></button>
+      <button class="category-card" data-category="Other Equipment" type="button"><div class="icon">⚙️</div><h3>Other Equipment</h3><p>Ask us about other fairly used heavy equipment and machinery.</p></button>
     </div>
+
+    <div id="equipmentStatus" class="equipment-status">Loading available equipment…</div>
+    <div id="equipmentListings" class="listing-grid"></div>
   </div>
 </section>
 
@@ -158,7 +175,71 @@
 <footer>
   <p>© 2026 <b>PrimeLift Heavy Equipment</b>. Fairly Used Heavy Equipment & Machinery.</p>
 </footer>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
+const SUPABASE_URL='https://lxxukddkahjczhwgjnrd.supabase.co';
+const SUPABASE_PUBLISHABLE_KEY='sb_publishable_A2DVs1oC_i1qPAOMC2I7zA_CzihS5gf';
+const supabaseClient=window.supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY);
+const categories=['All','Excavators','Wheel Loaders','Bulldozers','Forklifts','Backhoe Loaders','Other Equipment'];
+let allEquipment=[];
+let selectedCategory='All';
+
+async function loadEquipment(){
+  const status=document.getElementById('equipmentStatus');
+  const listings=document.getElementById('equipmentListings');
+  status.textContent='Loading available equipment…';
+  const {data,error}=await supabaseClient.from('equipment').select('*,equipment_images(image_url,sort_order)').order('created_at',{ascending:false});
+  if(error){status.textContent='Equipment is temporarily unavailable. Please contact PrimeLift directly.'; console.error(error); return;}
+  allEquipment=data||[];
+  renderEquipment();
+}
+
+function renderEquipment(){
+  const listings=document.getElementById('equipmentListings');
+  const status=document.getElementById('equipmentStatus');
+  const items=selectedCategory==='All'?allEquipment:allEquipment.filter(x=>x.category===selectedCategory);
+  if(!items.length){
+    status.textContent=selectedCategory==='All'?'No equipment is currently listed. Please check back soon.':'No equipment is currently listed in this category.';
+    listings.innerHTML='';
+    return;
+  }
+  status.textContent=items.length+' machine'+(items.length===1?'':'s')+' available';
+  listings.innerHTML=items.map(item=>{
+    const title=[item.make,item.model].filter(Boolean).join(' ');
+    const details=[item.year,item.hours!=null?Number(item.hours).toLocaleString()+' hours':null].filter(Boolean).join(' • ');
+    const price=item.price!=null?Number(item.price).toLocaleString(undefined,{maximumFractionDigits:2}):'Price on request';
+    const photos=[...(item.equipment_images||[])].sort((a,b)=>(a.sort_order||0)-(b.sort_order||0)).map(x=>x.image_url).filter(Boolean);
+    if(item.image_url && !photos.includes(item.image_url)) photos.unshift(item.image_url);
+    const img=photos[0]||'';
+    const gallery=photos.length>1?`<div class="gallery-thumbs">${photos.map((url,i)=>`<img src="${url}" alt="${title} photo ${i+1}" loading="lazy" onclick="this.closest('.listing').querySelector('.main-photo').src=this.src">`).join('')}</div>`:'';
+    const desc=(item.description||'').replace(/[<>]/g,'');
+    const video=item.video_url?`<video class="listing-video" controls preload="metadata" src="${item.video_url}"></video>`:'';
+    const mailSubject=encodeURIComponent('PrimeLift inquiry: '+title);
+    const mailBody=encodeURIComponent('Hello PrimeLift,\n\nI am interested in the '+title+' listed on your website.\n\nPlease send me more information, availability and pricing.');
+    return `<article class="listing">
+      <div class="listing-media">${img?`<img class="main-photo" src="${img}" alt="${title.replace(/\"/g,'&quot;')}" loading="lazy">`:''}</div>${gallery}
+      <div class="listing-body">
+        <span class="listing-condition">${item.condition||'Fairly Used'}</span>
+        <h3>${title||'Equipment'}</h3>
+        <div class="listing-meta">${details||item.category||''}</div>
+        <div class="listing-price">${price}</div>
+        <div class="listing-description">${desc}</div>
+        ${video}
+        <div class="listing-actions"><a class="mini-btn" href="mailto:zeldawilson808@gmail.com?subject=${mailSubject}&body=${mailBody}">INQUIRE</a><a class="mini-btn secondary" href="#contact">CONTACT PRIMELIFT</a></div>
+      </div>
+    </article>`;
+  }).join('');
+}
+
+document.querySelectorAll('.category-card').forEach(button=>{
+  button.addEventListener('click',()=>{
+    selectedCategory=button.dataset.category;
+    document.querySelectorAll('.category-card').forEach(b=>b.classList.toggle('active',b===button));
+    renderEquipment();
+    document.getElementById('equipmentListings').scrollIntoView({behavior:'smooth',block:'start'});
+  });
+});
+
 function sendInquiry(event){
   event.preventDefault();
   const name=document.getElementById('customerName').value.trim();
@@ -169,6 +250,8 @@ function sendInquiry(event){
   const body=encodeURIComponent('Name: '+name+'\nCustomer email: '+email+'\nEquipment needed: '+equipment+'\n\nMessage:\n'+message);
   window.location.href='mailto:zeldawilson808@gmail.com?subject='+subject+'&body='+body;
 }
+
+loadEquipment();
 </script>
 </body>
 </html>
