@@ -1,1144 +1,147 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PrimeLift Heavy Equipment - Admin</title>
-
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mechavon Admin</title>
 <style>
-*{box-sizing:border-box}
-body{
-  margin:0;
-  font-family:Arial,sans-serif;
-  background:#f4f6f8;
-  color:#222;
-}
-header{
-  background:#111;
-  color:white;
-  padding:18px 20px;
-  text-align:center;
-}
-header h1{margin:0;font-size:24px}
-header p{margin:6px 0 0;color:#ccc}
-
-.container{
-  max-width:1100px;
-  margin:25px auto;
-  padding:0 15px;
-}
-
-.card{
-  background:white;
-  padding:22px;
-  margin-bottom:22px;
-  border-radius:12px;
-  box-shadow:0 2px 10px rgba(0,0,0,.08);
-}
-
-h2{
-  margin-top:0;
-  color:#111;
-}
-
-label{
-  display:block;
-  font-weight:bold;
-  margin-top:14px;
-  margin-bottom:6px;
-}
-
-input,select,textarea{
-  width:100%;
-  padding:12px;
-  border:1px solid #ccc;
-  border-radius:7px;
-  font-size:15px;
-}
-
-textarea{
-  min-height:120px;
-  resize:vertical;
-}
-
-button{
-  border:0;
-  border-radius:7px;
-  padding:12px 18px;
-  font-weight:bold;
-  cursor:pointer;
-  margin-top:15px;
-}
-
-.primary{
-  background:#111;
-  color:white;
-}
-
-.secondary{
-  background:#e9ecef;
-  color:#111;
-}
-
-.danger{
-  background:#c62828;
-  color:white;
-}
-
-.edit{
-  background:#1769aa;
-  color:white;
-}
-
-.hidden{display:none}
-
-.message{
-  padding:12px;
-  border-radius:7px;
-  margin-top:15px;
-  display:none;
-}
-
-.success{
-  background:#e7f6ea;
-  color:#176b2c;
-}
-
-.error{
-  background:#fdeaea;
-  color:#a11;
-}
-
-.preview{
-  display:flex;
-  flex-wrap:wrap;
-  gap:10px;
-  margin-top:12px;
-}
-
-.preview img{
-  width:100px;
-  height:75px;
-  object-fit:cover;
-  border-radius:6px;
-}
-
-.grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
-  gap:18px;
-}
-
-.equipment{
-  border:1px solid #ddd;
-  border-radius:10px;
-  overflow:hidden;
-  background:#fff;
-}
-
-.equipment img{
-  width:100%;
-  height:180px;
-  object-fit:cover;
-  background:#eee;
-}
-
-.equipment-body{
-  padding:15px;
-}
-
-.equipment-body h3{
-  margin:0 0 8px;
-}
-
-.equipment-body p{
-  margin:6px 0;
-  color:#555;
-}
-
-.actions{
-  display:flex;
-  gap:8px;
-  flex-wrap:wrap;
-}
-
-.actions button{
-  margin-top:10px;
-}
-
-.topbar{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:10px;
-  flex-wrap:wrap;
-}
-
-.small{
-  color:#666;
-  font-size:14px;
-}
-
-.login-box{
-  max-width:450px;
-  margin:50px auto;
-}
-
-.loading{
-  text-align:center;
-  padding:20px;
-  color:#666;
-}
-
-@media(max-width:600px){
-  header h1{font-size:20px}
-  .card{padding:16px}
-}
+*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:#f3f4f6;color:#111827}
+.wrap{max-width:900px;margin:auto;padding:24px}
+header{background:#111827;color:#fff;padding:22px 0}h1{margin:0;font-size:28px}
+.card{background:#fff;border-radius:14px;padding:22px;margin:20px 0;box-shadow:0 4px 18px rgba(0,0,0,.08)}
+label{display:block;font-weight:700;margin:14px 0 6px}input,select,textarea{width:100%;padding:12px;border:1px solid #d1d5db;border-radius:8px;font-size:16px}textarea{min-height:120px;resize:vertical}
+button{border:0;border-radius:8px;padding:12px 18px;font-weight:700;cursor:pointer;background:#111827;color:#fff;margin-top:16px}
+button.secondary{background:#6b7280}.hidden{display:none}.msg{margin-top:14px;padding:12px;border-radius:8px;background:#eef2ff}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}@media(max-width:650px){.grid{grid-template-columns:1fr}}
+.small{color:#6b7280;font-size:14px}.danger{color:#b91c1c}
 </style>
 </head>
-
 <body>
+<header><div class="wrap"><h1>Mechavon Heavy Equipment — Admin</h1></div></header>
+<main class="wrap">
 
-<header>
-  <h1>PrimeLift Heavy Equipment</h1>
-  <p>Admin Dashboard</p>
-</header>
+<section id="loginCard" class="card">
+<h2>Admin Login</h2>
+<p class="small">Use the Mechavon admin email and password you created in Supabase.</p>
+<label>Email</label>
+<input id="email" type="email" autocomplete="username" value="zeldawilson808@gmail.com">
+<label>Password</label>
+<input id="password" type="password" autocomplete="current-password">
+<button id="loginBtn">LOG IN</button>
+<div id="loginMsg" class="msg hidden"></div>
+</section>
 
-<div class="container">
-
-  <!-- LOGIN -->
-  <div id="loginSection" class="card login-box">
-    <h2>Admin Login</h2>
-
-    <label>Email</label>
-    <input
-      id="loginEmail"
-      type="email"
-      value="zeldawilson808@gmail.com"
-    >
-
-    <label>Password</label>
-    <input
-      id="loginPassword"
-      type="password"
-      placeholder="Enter your password"
-    >
-
-    <button class="primary" onclick="login()">LOG IN</button>
-
-    <div id="loginMessage" class="message"></div>
-  </div>
-
-
-  <!-- ADMIN -->
-  <div id="adminSection" class="hidden">
-
-    <!-- ADD / EDIT EQUIPMENT -->
-    <div class="card">
-
-      <div class="topbar">
-        <h2 id="formTitle">Add Equipment</h2>
-
-        <button
-          class="secondary"
-          onclick="logout()"
-        >
-          LOG OUT
-        </button>
-      </div>
-
-      <input type="hidden" id="editingId">
-
-      <label>Category</label>
-      <select id="category">
-        <option value="">Select category</option>
-        <option>Excavators</option>
-        <option>Wheel Loaders</option>
-        <option>Bulldozers</option>
-        <option>Forklifts</option>
-        <option>Backhoe Loaders</option>
-        <option>Other Equipment</option>
-      </select>
-
-      <label>Make</label>
-      <input id="make" type="text" placeholder="e.g. Caterpillar">
-
-      <label>Model</label>
-      <input id="model" type="text" placeholder="e.g. 320D">
-
-      <label>Year</label>
-      <input id="year" type="number" placeholder="e.g. 2019">
-
-      <label>Hours</label>
-      <input id="hours" type="number" placeholder="e.g. 4500">
-
-      <label>Price</label>
-      <input id="price" type="number" step="0.01" placeholder="e.g. 85000">
-
-      <label>Condition</label>
-      <select id="condition">
-        <option value="">Select condition</option>
-        <option>Excellent</option>
-        <option>Very Good</option>
-        <option>Good</option>
-        <option>Fair</option>
-        <option>Used</option>
-      </select>
-
-      <label>Description</label>
-      <textarea
-        id="description"
-        placeholder="Describe the equipment..."
-      ></textarea>
-
-      <label>Photos</label>
-      <input
-        id="photos"
-        type="file"
-        accept="image/*"
-        multiple
-      >
-
-      <div id="photoPreview" class="preview"></div>
-
-      <label>Video (optional)</label>
-      <input
-        id="video"
-        type="file"
-        accept="video/*"
-      >
-
-      <p class="small">
-        When adding new equipment, at least one photo is required.
-      </p>
-
-      <button
-        id="saveButton"
-        class="primary"
-        onclick="saveEquipment()"
-      >
-        SAVE EQUIPMENT
-      </button>
-
-      <button
-        id="cancelEditButton"
-        class="secondary hidden"
-        onclick="cancelEdit()"
-      >
-        CANCEL EDIT
-      </button>
-
-      <div id="formMessage" class="message"></div>
-
-    </div>
-
-
-    <!-- EQUIPMENT LIST -->
-    <div class="card">
-
-      <div class="topbar">
-        <div>
-          <h2>Equipment Listings</h2>
-          <p class="small">
-            Manage your equipment inventory.
-          </p>
-        </div>
-
-        <button
-          class="secondary"
-          onclick="loadEquipment()"
-        >
-          REFRESH
-        </button>
-      </div>
-
-      <div id="equipmentList" class="grid">
-        <div class="loading">Loading equipment...</div>
-      </div>
-
-    </div>
-
-  </div>
-
+<section id="dashboard" class="hidden">
+<div class="card">
+<h2>Add Equipment</h2>
+<p class="small">Add a machine and one main photo. We can expand this to multiple photos after the first version is working.</p>
+<div class="grid">
+<div><label>Category</label>
+<select id="category">
+<option>Excavators</option><option>Wheel Loaders</option><option>Bulldozers</option>
+<option>Forklifts</option><option>Backhoe Loaders</option><option>Other Equipment</option>
+</select></div>
+<div><label>Make</label><input id="make" placeholder="e.g. Caterpillar"></div>
+<div><label>Model</label><input id="model" placeholder="e.g. 320D"></div>
+<div><label>Year</label><input id="year" type="number" placeholder="e.g. 2019"></div>
+<div><label>Hours</label><input id="hours" type="number" placeholder="e.g. 5200"></div>
+<div><label>Price</label><input id="price" type="number" step="0.01" placeholder="e.g. 85000"></div>
 </div>
+<label>Condition</label><input id="condition" placeholder="e.g. Good / Very Good">
+<label>Description</label><textarea id="description" placeholder="Describe the machine, specifications and availability"></textarea>
+<label>Main Photo</label><input id="photo" type="file" accept="image/*">
+<button id="saveBtn">SAVE EQUIPMENT</button>
+<button id="logoutBtn" class="secondary">LOG OUT</button>
+<div id="saveMsg" class="msg hidden"></div>
+</div>
+</section>
 
+</main>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
 <script>
+/*
+  Mechavon CONFIGURATION
+  Replace ONLY the two placeholder strings below.
+  Never put a sb_secret_ key here.
+*/
+const SUPABASE_URL = "PASTE_YOUR_SUPABASE_PROJECT_URL_HERE";
+const SUPABASE_PUBLISHABLE_KEY = "PASTE_YOUR_SB_PUBLISHABLE_KEY_HERE";
 
-/* ==============================
-   SUPABASE CONNECTION
-   ============================== */
+const client = supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+const $ = id => document.getElementById(id);
 
-const SUPABASE_URL =
-"https://lxxukddkahjczhwgjnrd.supabase.co";
-
-const SUPABASE_PUBLISHABLE_KEY =
-"sb_publishable_A2DVs1oC_i1qPAOMC2I7zA_CzihS5gf";
-
-const client =
-supabase.createClient(
-  SUPABASE_URL,
-  SUPABASE_PUBLISHABLE_KEY
-);
-
-
-/* ==============================
-   ELEMENTS
-   ============================== */
-
-const loginSection =
-document.getElementById("loginSection");
-
-const adminSection =
-document.getElementById("adminSection");
-
-const loginMessage =
-document.getElementById("loginMessage");
-
-const formMessage =
-document.getElementById("formMessage");
-
-const photosInput =
-document.getElementById("photos");
-
-const photoPreview =
-document.getElementById("photoPreview");
-
-
-/* ==============================
-   MESSAGE
-   ============================== */
-
-function showMessage(element,text,type){
-
-  element.textContent = text;
-
-  element.className =
-    "message " + type;
-
-  element.style.display = "block";
-
+function show(el, text, isError=false){
+  el.classList.remove("hidden");
+  el.textContent = text;
+  el.style.background = isError ? "#fee2e2" : "#eef2ff";
 }
-
-
-/* ==============================
-   ADMIN CHECK
-   ============================== */
 
 async function checkAdmin(){
-
-  const {
-    data:{user}
-  } = await client.auth.getUser();
-
-  if(!user){
-    loginSection.classList.remove("hidden");
-    adminSection.classList.add("hidden");
-    return;
-  }
-
-  const {data,error} =
-    await client
-      .from("admin_users")
-      .select("user_id")
-      .eq("user_id",user.id)
-      .maybeSingle();
-
+  const {data:{user}} = await client.auth.getUser();
+  if(!user){ $("loginCard").classList.remove("hidden"); $("dashboard").classList.add("hidden"); return false; }
+  const {data,error} = await client.from("admin_users").select("user_id").eq("user_id",user.id).maybeSingle();
   if(error || !data){
-
     await client.auth.signOut();
-
-    loginSection.classList.remove("hidden");
-    adminSection.classList.add("hidden");
-
-    showMessage(
-      loginMessage,
-      "You are not authorized as an administrator.",
-      "error"
-    );
-
-    return;
+    show($("loginMsg"), "This account is not authorized as a Mechavon admin.", true);
+    return false;
   }
-
-  loginSection.classList.add("hidden");
-  adminSection.classList.remove("hidden");
-
-  loadEquipment();
+  $("loginCard").classList.add("hidden"); $("dashboard").classList.remove("hidden"); return true;
 }
 
-
-/* ==============================
-   LOGIN
-   ============================== */
-
-async function login(){
-
-  const email =
-    document.getElementById("loginEmail").value.trim();
-
-  const password =
-    document.getElementById("loginPassword").value;
-
-  showMessage(
-    loginMessage,
-    "Logging in...",
-    "success"
-  );
-
-  const {error} =
-    await client.auth.signInWithPassword({
-      email,
-      password
-    });
-
-  if(error){
-
-    showMessage(
-      loginMessage,
-      error.message,
-      "error"
-    );
-
-    return;
-  }
-
+$("loginBtn").onclick = async () => {
+  show($("loginMsg"), "Signing in...");
+  const {error} = await client.auth.signInWithPassword({
+    email: $("email").value.trim(),
+    password: $("password").value
+  });
+  if(error){ show($("loginMsg"), error.message, true); return; }
   await checkAdmin();
-}
+};
 
+$("logoutBtn").onclick = async () => { await client.auth.signOut(); location.reload(); };
 
-/* ==============================
-   LOGOUT
-   ============================== */
+$("saveBtn").onclick = async () => {
+  const saveMsg = $("saveMsg");
+  show(saveMsg, "Saving equipment...");
+  const photo = $("photo").files[0];
+  let image_url = null;
 
-async function logout(){
-
-  await client.auth.signOut();
-
-  adminSection.classList.add("hidden");
-  loginSection.classList.remove("hidden");
-
-  document.getElementById("loginPassword").value = "";
-
-}
-
-
-/* ==============================
-   PHOTO PREVIEW
-   ============================== */
-
-photosInput.addEventListener(
-  "change",
-  function(){
-
-    photoPreview.innerHTML = "";
-
-    const files = Array.from(this.files);
-
-    files.forEach(file => {
-
-      const img =
-        document.createElement("img");
-
-      img.src =
-        URL.createObjectURL(file);
-
-      photoPreview.appendChild(img);
-
-    });
-
-  }
-);
-
-
-/* ==============================
-   UPLOAD FILE
-   ============================== */
-
-async function uploadFile(file,folder){
-
-  const safeName =
-    file.name
-      .toLowerCase()
-      .replace(/[^a-z0-9._-]/g,"-");
-
-  const path =
-    folder +
-    "/" +
-    Date.now() +
-    "-" +
-    crypto.randomUUID() +
-    "-" +
-    safeName;
-
-  const {error:uploadError} =
-    await client
-      .storage
-      .from("equipment-images")
-      .upload(
-        path,
-        file,
-        {upsert:false}
-      );
-
-  if(uploadError)
-    throw uploadError;
-
-  const {data:urlData} =
-    client
-      .storage
-      .from("equipment-images")
-      .getPublicUrl(path);
-
-  return urlData.publicUrl;
-}
-
-
-/* ==============================
-   SAVE EQUIPMENT
-   ============================== */
-
-async function saveEquipment(){
-
-  const editingId =
-    document.getElementById("editingId").value;
-
-  const category =
-    document.getElementById("category").value;
-
-  const make =
-    document.getElementById("make").value.trim();
-
-  const model =
-    document.getElementById("model").value.trim();
-
-  const year =
-    document.getElementById("year").value;
-
-  const hours =
-    document.getElementById("hours").value;
-
-  const price =
-    document.getElementById("price").value;
-
-  const condition =
-    document.getElementById("condition").value;
-
-  const description =
-    document.getElementById("description").value.trim();
-
-  const photoFiles =
-    Array.from(photosInput.files);
-
-  const videoFile =
-    document.getElementById("video").files[0];
-
-
-  if(!category || !make || !model){
-
-    showMessage(
-      formMessage,
-      "Please enter the category, make and model.",
-      "error"
-    );
-
-    return;
-  }
-
-
-  /* ============================
-     EDIT EXISTING EQUIPMENT
-     ============================ */
-
-  if(editingId){
-
-    const {error} =
-      await client
-        .from("equipment")
-        .update({
-          category,
-          make,
-          model,
-          year: year ? Number(year) : null,
-          hours: hours ? Number(hours) : null,
-          price: price ? Number(price) : null,
-          condition,
-          description
-        })
-        .eq("id",editingId);
-
-    if(error){
-
-      showMessage(
-        formMessage,
-        error.message,
-        "error"
-      );
-
-      return;
+  try {
+    if(photo){
+      const safeName = photo.name.toLowerCase().replace(/[^a-z0-9._-]/g,"-");
+      const path = Date.now() + "-" + crypto.randomUUID() + "-" + safeName;
+      const {error:uploadError} = await client.storage.from("equipment-images").upload(path, photo, {upsert:false});
+      if(uploadError) throw uploadError;
+      const {data:urlData} = client.storage.from("equipment-images").getPublicUrl(path);
+      image_url = urlData.publicUrl;
     }
 
-    showMessage(
-      formMessage,
-      "Equipment updated successfully.",
-      "success"
-    );
+    const row = {
+      category: $("category").value,
+      make: $("make").value.trim(),
+      model: $("model").value.trim(),
+      year: $("year").value ? Number($("year").value) : null,
+      hours: $("hours").value ? Number($("hours").value) : null,
+      price: $("price").value ? Number($("price").value) : null,
+      condition: $("condition").value.trim() || null,
+      description: $("description").value.trim() || null,
+      image_url
+    };
 
-    cancelEdit();
+    if(!row.make || !row.model) throw new Error("Make and model are required.");
 
-    await loadEquipment();
+    const {error} = await client.from("equipment").insert(row);
+    if(error) throw error;
 
-    return;
+    show(saveMsg, "Equipment saved successfully.");
+    ["make","model","year","hours","price","condition","description","photo"].forEach(id => $(id).value = "");
+  } catch(err) {
+    show(saveMsg, err.message || "Something went wrong.", true);
   }
-
-
-  /* ============================
-     ADD NEW EQUIPMENT
-     ============================ */
-
-  if(photoFiles.length === 0){
-
-    showMessage(
-      formMessage,
-      "Please select at least one photo.",
-      "error"
-    );
-
-    return;
-  }
-
-
-  try{
-
-    showMessage(
-      formMessage,
-      "Uploading photos...",
-      "success"
-    );
-
-
-    const photoUrls = [];
-
-    for(const file of photoFiles){
-
-      const url =
-        await uploadFile(
-          file,
-          "equipment"
-        );
-
-      photoUrls.push(url);
-
-    }
-
-
-    let videoUrl = null;
-
-    if(videoFile){
-
-      showMessage(
-        formMessage,
-        "Uploading video...",
-        "success"
-      );
-
-      videoUrl =
-        await uploadFile(
-          videoFile,
-          "videos"
-        );
-    }
-
-
-    showMessage(
-      formMessage,
-      "Saving equipment...",
-      "success"
-    );
-
-
-    const {data:equipment,error} =
-      await client
-        .from("equipment")
-        .insert({
-          category,
-          make,
-          model,
-          year: year ? Number(year) : null,
-          hours: hours ? Number(hours) : null,
-          price: price ? Number(price) : null,
-          condition,
-          description,
-          image_url: photoUrls[0],
-          video_url: videoUrl
-        })
-        .select()
-        .single();
-
-
-    if(error)
-      throw error;
-
-
-    const imageRows =
-      photoUrls.map(
-        (url,index) => ({
-          equipment_id: equipment.id,
-          image_url: url,
-          sort_order: index
-        })
-      );
-
-
-    const {error:imageError} =
-      await client
-        .from("equipment_images")
-        .insert(imageRows);
-
-
-    if(imageError)
-      throw imageError;
-
-
-    showMessage(
-      formMessage,
-      "Equipment saved successfully!",
-      "success"
-    );
-
-
-    clearForm();
-
-    await loadEquipment();
-
-
-  }catch(error){
-
-    showMessage(
-      formMessage,
-      error.message,
-      "error"
-    );
-
-  }
-
-}
-
-
-/* ==============================
-   LOAD EQUIPMENT
-   ============================== */
-
-async function loadEquipment(){
-
-  const list =
-    document.getElementById("equipmentList");
-
-  list.innerHTML =
-    '<div class="loading">Loading equipment...</div>';
-
-
-  const {data,error} =
-    await client
-      .from("equipment")
-      .select("*")
-      .order("created_at",{ascending:false});
-
-
-  if(error){
-
-    list.innerHTML =
-      "<p>Unable to load equipment: " +
-      error.message +
-      "</p>";
-
-    return;
-  }
-
-
-  if(!data || data.length === 0){
-
-    list.innerHTML =
-      "<p>No equipment has been added yet.</p>";
-
-    return;
-  }
-
-
-  list.innerHTML = "";
-
-
-  data.forEach(item => {
-
-    const card =
-      document.createElement("div");
-
-    card.className =
-      "equipment";
-
-
-    const image =
-      item.image_url
-      ? `<img src="${item.image_url}" alt="${escapeHtml(item.make + " " + item.model)}">`
-      : `<img src="" alt="No image">`;
-
-
-    const price =
-      item.price !== null
-      ? Number(item.price).toLocaleString()
-      : "Contact us";
-
-
-    card.innerHTML = `
-
-      ${image}
-
-      <div class="equipment-body">
-
-        <h3>
-          ${escapeHtml(item.make)}
-          ${escapeHtml(item.model)}
-        </h3>
-
-        <p>
-          <strong>Category:</strong>
-          ${escapeHtml(item.category || "-")}
-        </p>
-
-        <p>
-          <strong>Year:</strong>
-          ${item.year || "-"}
-        </p>
-
-        <p>
-          <strong>Hours:</strong>
-          ${item.hours !== null ? Number(item.hours).toLocaleString() : "-"}
-        </p>
-
-        <p>
-          <strong>Price:</strong>
-          ${price}
-        </p>
-
-        <p>
-          <strong>Condition:</strong>
-          ${escapeHtml(item.condition || "-")}
-        </p>
-
-        <div class="actions">
-
-          <button
-            class="edit"
-            onclick="editEquipment(${item.id})"
-          >
-            EDIT
-          </button>
-
-          <button
-            class="danger"
-            onclick="deleteEquipment(${item.id})"
-          >
-            DELETE
-          </button>
-
-        </div>
-
-      </div>
-    `;
-
-
-    list.appendChild(card);
-
-  });
-
-}
-
-
-/* ==============================
-   EDIT EQUIPMENT
-   ============================== */
-
-async function editEquipment(id){
-
-  const {data,error} =
-    await client
-      .from("equipment")
-      .select("*")
-      .eq("id",id)
-      .single();
-
-
-  if(error){
-
-    alert(error.message);
-    return;
-
-  }
-
-
-  document.getElementById("editingId").value =
-    data.id;
-
-  document.getElementById("category").value =
-    data.category || "";
-
-  document.getElementById("make").value =
-    data.make || "";
-
-  document.getElementById("model").value =
-    data.model || "";
-
-  document.getElementById("year").value =
-    data.year || "";
-
-  document.getElementById("hours").value =
-    data.hours || "";
-
-  document.getElementById("price").value =
-    data.price || "";
-
-  document.getElementById("condition").value =
-    data.condition || "";
-
-  document.getElementById("description").value =
-    data.description || "";
-
-
-  document.getElementById("formTitle").textContent =
-    "Edit Equipment";
-
-  document.getElementById("saveButton").textContent =
-    "UPDATE EQUIPMENT";
-
-  document.getElementById("cancelEditButton")
-    .classList.remove("hidden");
-
-
-  window.scrollTo({
-    top:0,
-    behavior:"smooth"
-  });
-
-
-  showMessage(
-    formMessage,
-    "Editing this equipment. Update the information and save.",
-    "success"
-  );
-
-}
-
-
-/* ==============================
-   CANCEL EDIT
-   ============================== */
-
-function cancelEdit(){
-
-  document.getElementById("editingId").value = "";
-
-  document.getElementById("formTitle").textContent =
-    "Add Equipment";
-
-  document.getElementById("saveButton").textContent =
-    "SAVE EQUIPMENT";
-
-  document.getElementById("cancelEditButton")
-    .classList.add("hidden");
-
-  clearForm();
-
-}
-
-
-/* ==============================
-   CLEAR FORM
-   ============================== */
-
-function clearForm(){
-
-  document.getElementById("category").value = "";
-  document.getElementById("make").value = "";
-  document.getElementById("model").value = "";
-  document.getElementById("year").value = "";
-  document.getElementById("hours").value = "";
-  document.getElementById("price").value = "";
-  document.getElementById("condition").value = "";
-  document.getElementById("description").value = "";
-
-  photosInput.value = "";
-
-  document.getElementById("video").value = "";
-
-  photoPreview.innerHTML = "";
-
-}
-
-
-/* ==============================
-   DELETE EQUIPMENT
-   ============================== */
-
-async function deleteEquipment(id){
-
-  const confirmed =
-    confirm(
-      "Are you sure you want to delete this equipment listing?"
-    );
-
-  if(!confirmed)
-    return;
-
-
-  const {error} =
-    await client
-      .from("equipment")
-      .delete()
-      .eq("id",id);
-
-
-  if(error){
-
-    alert(
-      "Could not delete equipment: " +
-      error.message
-    );
-
-    return;
-  }
-
-
-  alert("Equipment deleted successfully.");
-
-  await loadEquipment();
-
-}
-
-
-/* ==============================
-   HTML SAFETY
-   ============================== */
-
-function escapeHtml(value){
-
-  return String(value || "")
-    .replace(/&/g,"&amp;")
-    .replace(/</g,"&lt;")
-    .replace(/>/g,"&gt;")
-    .replace(/"/g,"&quot;")
-    .replace(/'/g,"&#039;");
-
-}
-
-
-/* ==============================
-   START
-   ============================== */
+};
 
 checkAdmin();
-
 </script>
-
 </body>
-  </html>
+</html>
