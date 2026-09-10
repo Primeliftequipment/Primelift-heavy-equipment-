@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>PrimeLift Admin</title>
+<title>mechavon Admin</title>
 <style>
 *{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:#f3f4f6;color:#111827}
 .wrap{max-width:900px;margin:auto;padding:24px}
@@ -22,7 +22,7 @@ button.secondary{background:#6b7280}.hidden{display:none}.msg{margin-top:14px;pa
 
 <section id="loginCard" class="card">
 <h2>Admin Login</h2>
-<p class="small">Use the PrimeLift admin email and password you created in Supabase.</p>
+<p class="small">Use the mechavon admin email and password you created in Supabase.</p>
 <label>Email</label>
 <input id="email" type="email" autocomplete="username" placeholder="Admin email">
 <label>Password</label>
@@ -62,7 +62,7 @@ button.secondary{background:#6b7280}.hidden{display:none}.msg{margin-top:14px;pa
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 /*
-  PRIME LIFT CONFIGURATION
+  MECHAVON CONFIGURATION
   Replace ONLY the two placeholder strings below.
   Never put a sb_secret_ key here.
 */
@@ -84,7 +84,7 @@ async function checkAdmin(){
   const {data,error} = await client.from("admin_users").select("user_id").eq("user_id",user.id).maybeSingle();
   if(error || !data){
     await client.auth.signOut();
-    show($("loginMsg"), "This account is not authorized as a PrimeLift admin.", true);
+    show($("loginMsg"), "This account is not authorized as a mechavon admin.", true);
     return false;
   }
   $("loginCard").classList.add("hidden"); $("dashboard").classList.remove("hidden"); return true;
