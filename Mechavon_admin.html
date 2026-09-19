@@ -5,231 +5,25 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Mechavon Admin</title>
 <style>
-*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:#f3f4f6;color:#111827}
-.wrap{max-width:900px;margin:auto;padding:24px}
-header{background:#111827;color:#fff;padding:22px 0}h1{margin:0;font-size:28px}
-.card{background:#fff;border-radius:14px;padding:22px;margin:20px 0;box-shadow:0 4px 18px rgba(0,0,0,.08)}
-label{display:block;font-weight:700;margin:14px 0 6px}input,select,textarea{width:100%;padding:12px;border:1px solid #d1d5db;border-radius:8px;font-size:16px}textarea{min-height:120px;resize:vertical}
-button{border:0;border-radius:8px;padding:12px 18px;font-weight:700;cursor:pointer;background:#111827;color:#fff;margin-top:16px}
-button.secondary{background:#6b7280}.hidden{display:none}.msg{margin-top:14px;padding:12px;border-radius:8px;background:#eef2ff}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}@media(max-width:650px){.grid{grid-template-columns:1fr}}
-.small{color:#6b7280;font-size:14px}.danger{color:#b91c1c}
+*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:#f3f4f6;color:#111827}.wrap{max-width:900px;margin:auto;padding:24px}header{background:#111827;color:#fff;padding:22px 0}h1{margin:0;font-size:28px}.card{background:#fff;border-radius:14px;padding:22px;margin:20px 0;box-shadow:0 4px 18px rgba(0,0,0,.08)}label{display:block;font-weight:700;margin:14px 0 6px}input,select,textarea{width:100%;padding:12px;border:1px solid #d1d5db;border-radius:8px;font-size:16px}textarea{min-height:120px;resize:vertical}button{border:0;border-radius:8px;padding:12px 18px;font-weight:700;cursor:pointer;background:#111827;color:#fff;margin-top:16px}button.secondary{background:#6b7280}.hidden{display:none}.msg{margin-top:14px;padding:12px;border-radius:8px;background:#eef2ff}.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}@media(max-width:650px){.grid{grid-template-columns:1fr}}.small{color:#6b7280;font-size:14px}
 </style>
-</head>
-<body>
-<header><div class="wrap"><h1>Mechavon Heavy Equipment — Admin</h1></div></header>
-<main class="wrap">
-
-<section id="loginCard" class="card">
-<h2>Admin Login</h2>
-<p class="small">Use the Mechavon admin email and password you created in Supabase.</p>
-<label>Email</label>
-<input id="email" type="email" autocomplete="username" value="zeldawilson808@gmail.com">
-<label>Password</label>
-<input id="password" type="password" autocomplete="current-password">
-<button id="loginBtn">LOG IN</button>
-<div id="loginMsg" class="msg hidden"></div>
-</section>
-
-<section id="dashboard" class="hidden">
-<div class="card">
-<h2>Add Equipment</h2>
-<p class="small">Add a machine and one main photo. We can expand this to multiple photos after the first version is working.</p>
-<div class="grid">
-<div><label>Category</label>
-<select id="category">
-<option>Excavators</option><option>Wheel Loaders</option><option>Bulldozers</option>
-<option>Forklifts</option><option>Backhoe Loaders</option><option>Other Equipment</option>
-</select></div>
-<div><label>Make</label><input id="make" placeholder="e.g. Caterpillar"></div>
-<div><label>Model</label><input id="model" placeholder="e.g. 320D"></div>
-<div><label>Year</label><input id="year" type="number" placeholder="e.g. 2019"></div>
-<div><label>Hours</label><input id="hours" type="number" placeholder="e.g. 5200"></div>
-<div><label>Price</label><input id="price" type="number" step="0.01" placeholder="e.g. 85000"></div>
-</div>
-<label>Condition</label><input id="condition" placeholder="e.g. Good / Very Good">
-<label>Description</label><textarea id="description" placeholder="Describe the machine, specifications and availability"></textarea>
-<label>Main Photo</label><input id="photo" type="file" accept="image/*">
-<button id="saveBtn">SAVE EQUIPMENT</button>
-<button id="logoutBtn" class="secondary">LOG OUT</button>
-<div id="saveMsg" class="msg hidden"></div>
-</div>
-
-<div class="card">
-<h2>Current Equipment</h2>
-<p class="small">Machines already saved on the website. You can delete an equipment listing here.</p>
-<div id="equipmentList"><p class="small">Loading equipment...</p></div>
-<div id="listMsg" class="msg hidden"></div>
-</div>
-</section>
-
-</main>
-
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script>
-/*
-  Mechavon CONFIGURATION
-  Replace ONLY the two placeholder strings below.
-  Never put a sb_secret_ key here.
-*/
-const SUPABASE_URL = "https://lxxukddkahjczhwgjnrd.supabase.co";
-const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_A2DVs1oC_i1qPAOMC2I7zA_CzihS5gf";
-
-const client = supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
-const $ = id => document.getElementById(id);
-
-function show(el, text, isError=false){
-  el.classList.remove("hidden");
-  el.textContent = text;
-  el.style.background = isError ? "#fee2e2" : "#eef2ff";
-}
-
-async function checkAdmin(){
-  const {data:{user}} = await client.auth.getUser();
-  if(!user){ $("loginCard").classList.remove("hidden"); $("dashboard").classList.add("hidden"); return false; }
-  const {data,error} = await client.from("admin_users").select("user_id").eq("user_id",user.id).maybeSingle();
-  if(error || !data){
-    await client.auth.signOut();
-    show($("loginMsg"), "This account is not authorized as a Mechavon admin.", true);
-    return false;
-  }
-  $("loginCard").classList.add("hidden"); $("dashboard").classList.remove("hidden"); return true;
-}
-
-$("loginBtn").onclick = async () => {
-  show($("loginMsg"), "Signing in...");
-  const {error} = await client.auth.signInWithPassword({
-    email: $("email").value.trim(),
-    password: $("password").value
-  });
-  if(error){ show($("loginMsg"), error.message, true); return; }
-  await checkAdmin();
-};
-
-$("logoutBtn").onclick = async () => { await client.auth.signOut(); location.reload(); };
-
-$("saveBtn").onclick = async () => {
-  const saveMsg = $("saveMsg");
-  show(saveMsg, "Saving equipment...");
-  const photo = $("photo").files[0];
-  let image_url = null;
-
-  try {
-    if(photo){
-      const safeName = photo.name.toLowerCase().replace(/[^a-z0-9._-]/g,"-");
-      const path = Date.now() + "-" + crypto.randomUUID() + "-" + safeName;
-      const {error:uploadError} = await client.storage.from("equipment-images").upload(path, photo, {upsert:false});
-      if(uploadError) throw uploadError;
-      const {data:urlData} = client.storage.from("equipment-images").getPublicUrl(path);
-      image_url = urlData.publicUrl;
-    }
-
-    const row = {
-      category: $("category").value,
-      make: $("make").value.trim(),
-      model: $("model").value.trim(),
-      year: $("year").value ? Number($("year").value) : null,
-      hours: $("hours").value ? Number($("hours").value) : null,
-      price: $("price").value ? Number($("price").value) : null,
-      condition: $("condition").value.trim() || null,
-      description: $("description").value.trim() || null,
-      image_url
-    };
-
-    if(!row.make || !row.model) throw new Error("Make and model are required.");
-
-    const {error} = await client.from("equipment").insert(row);
-    if(error) throw error;
-
-    show(saveMsg, "Equipment saved successfully.");
-    ["make","model","year","hours","price","condition","description","photo"].forEach(id => $(id).value = "");
-    await loadEquipment();
-  } catch(err) {
-    show(saveMsg, err.message || "Something went wrong.", true);
-  }
-};
-
-async function loadEquipment(){
-  const list = $("equipmentList");
-  list.textContent = "Loading equipment...";
-  const {data,error} = await client.from("equipment").select("*").order("created_at", {ascending:false});
-  if(error){
-    list.textContent = "Could not load equipment: " + error.message;
-    return;
-  }
-  if(!data || data.length === 0){
-    list.innerHTML = '<p class="small">No equipment listings yet.</p>';
-    return;
-  }
-  list.innerHTML = "";
-  data.forEach(item => {
-    const box = document.createElement("div");
-    box.style.border = "1px solid #e5e7eb";
-    box.style.borderRadius = "10px";
-    box.style.padding = "14px";
-    box.style.marginTop = "12px";
-
-    const title = document.createElement("strong");
-    title.textContent = (item.make || "") + " " + (item.model || "");
-    box.appendChild(title);
-
-    const info = document.createElement("p");
-    info.className = "small";
-    info.textContent = [item.category, item.year ? "Year " + item.year : "", item.hours ? item.hours + " hours" : "", item.price != null ? "Price: " + item.price : ""].filter(Boolean).join(" • ");
-    box.appendChild(info);
-
-    if(item.image_url){
-      const img = document.createElement("img");
-      img.src = item.image_url;
-      img.alt = title.textContent;
-      img.style.width = "100%";
-      img.style.maxWidth = "260px";
-      img.style.borderRadius = "8px";
-      img.style.marginTop = "8px";
-      box.appendChild(img);
-    }
-
-    const del = document.createElement("button");
-    del.textContent = "DELETE";
-    del.style.background = "#b91c1c";
-    del.onclick = () => deleteEquipment(item.id, item.image_url);
-    box.appendChild(del);
-    list.appendChild(box);
-  });
-}
-
-function getStoragePath(imageUrl){
-  if(!imageUrl) return null;
-  const marker = "/storage/v1/object/public/equipment-images/";
-  const pos = imageUrl.indexOf(marker);
-  if(pos === -1) return null;
-  return decodeURIComponent(imageUrl.slice(pos + marker.length));
-}
-
-async function deleteEquipment(id, imageUrl){
-  if(!id) return;
-  if(!confirm("Delete this equipment listing? This cannot be undone.")) return;
-  const msg = $("listMsg");
-  show(msg, "Deleting equipment...");
-  const {error} = await client.from("equipment").delete().eq("id", id);
-  if(error){
-    show(msg, error.message || "Could not delete equipment.", true);
-    return;
-  }
-  const path = getStoragePath(imageUrl);
-  if(path){
-    await client.storage.from("equipment-images").remove([path]);
-  }
-  show(msg, "Equipment deleted successfully.");
-  await loadEquipment();
-}
-
-async function startAdmin(){
-  const ok = await checkAdmin();
-  if(ok) await loadEquipment();
-}
-
-startAdmin();
-</script>
-</body>
-</html>
+</head><body>
+<header><div class="wrap"><h1>Mechavon Heavy Equipment — Admin</h1></div></header><main class="wrap">
+<section id="loginCard" class="card"><h2>Admin Login</h2><p class="small">Use the Mechavon admin email and password you created in Supabase.</p><label>Email</label><input id="email" type="email" autocomplete="username" value="zeldawilson808@gmail.com"><label>Password</label><input id="password" type="password" autocomplete="current-password"><button id="loginBtn">LOG IN</button><div id="loginMsg" class="msg hidden"></div></section>
+<section id="dashboard" class="hidden"><div class="card"><h2>Add Equipment</h2><p class="small">Add equipment details, multiple photos, and up to 2 optional videos.</p>
+<div class="grid"><div><label>Category</label><select id="category"><option>Excavators</option><option>Wheel Loaders</option><option>Bulldozers</option><option>Forklifts</option><option>Backhoe Loaders</option><option>Other Equipment</option></select></div><div><label>Make</label><input id="make" placeholder="e.g. Caterpillar"></div><div><label>Model</label><input id="model" placeholder="e.g. 320D"></div><div><label>Year</label><input id="year" type="number" placeholder="e.g. 2019"></div><div><label>Hours</label><input id="hours" type="number" placeholder="e.g. 5200"></div><div><label>Price</label><input id="price" type="number" step="0.01" placeholder="e.g. 85000"></div></div>
+<label>Currency</label><select id="currency_symbol"><option value="$">$ — US Dollar</option><option value="€">€ — Euro</option><option value="£">£ — British Pound</option><option value="¥">¥ — Yen / Yuan</option><option value="₦">₦ — Nigerian Naira</option><option value="₹">₹ — Indian Rupee</option><option value="₩">₩ — South Korean Won</option><option value="AED">د.إ — UAE Dirham</option><option value="SAR">﷼ — Saudi Riyal</option><option value="₽">₽ — Russian Ruble</option><option value="₺">₺ — Turkish Lira</option><option value="R">R — South African Rand</option></select>
+<label>Condition</label><input id="condition" placeholder="e.g. Good / Very Good"><label>Description</label><textarea id="description" placeholder="Describe the machine, specifications and availability"></textarea><label>Photos</label><input id="photos" type="file" accept="image/*" multiple><p class="small">Select as many photos as you want.</p><label>Videos (optional — maximum 2)</label><input id="videos" type="file" accept="video/*" multiple><p class="small">You can select 1 or 2 videos. More than 2 will not be accepted.</p><button id="saveBtn">SAVE EQUIPMENT</button><button id="logoutBtn" class="secondary">LOG OUT</button><div id="saveMsg" class="msg hidden"></div></div>
+<div class="card"><h2>Current Equipment</h2><p class="small">Machines already saved on the website. You can delete an equipment listing here.</p><div id="equipmentList"><p class="small">Loading equipment...</p></div><div id="listMsg" class="msg hidden"></div></div></section></main>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script>
+const SUPABASE_URL="https://lxxukddkahjczhwgjnrd.supabase.co";const SUPABASE_PUBLISHABLE_KEY="sb_publishable_A2DVs1oC_i1qPAOMC2I7zA_CzihS5gf";const client=supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY);const $=id=>document.getElementById(id);
+function show(el,text,isError=false){el.classList.remove("hidden");el.textContent=text;el.style.background=isError?"#fee2e2":"#eef2ff"}
+async function checkAdmin(){const {data:{user}}=await client.auth.getUser();if(!user){$("loginCard").classList.remove("hidden");$("dashboard").classList.add("hidden");return false}const {data,error}=await client.from("admin_users").select("user_id").eq("user_id",user.id).maybeSingle();if(error||!data){await client.auth.signOut();show($("loginMsg"),"This account is not authorized as a Mechavon admin.",true);return false}$("loginCard").classList.add("hidden");$("dashboard").classList.remove("hidden");return true}
+$("loginBtn").onclick=async()=>{show($("loginMsg"),"Signing in...");const {error}=await client.auth.signInWithPassword({email:$("email").value.trim(),password:$("password").value});if(error){show($("loginMsg"),error.message,true);return}await checkAdmin()};$("logoutBtn").onclick=async()=>{await client.auth.signOut();location.reload()};
+async function uploadFiles(files,folder){const urls=[];for(const file of files){const safeName=file.name.toLowerCase().replace(/[^a-z0-9._-]/g,"-");const path=folder+"/"+Date.now()+"-"+crypto.randomUUID()+"-"+safeName;const {error:uploadError}=await client.storage.from("equipment-images").upload(path,file,{upsert:false});if(uploadError)throw uploadError;const {data:urlData}=client.storage.from("equipment-images").getPublicUrl(path);urls.push(urlData.publicUrl)}return urls}
+$("saveBtn").onclick=async()=>{const saveMsg=$("saveMsg");show(saveMsg,"Saving equipment...");const photoFiles=Array.from($("photos").files||[]);const videoFiles=Array.from($("videos").files||[]);if(videoFiles.length>2){show(saveMsg,"Please select no more than 2 videos.",true);return}let image_urls=[],video_urls=[];try{if(photoFiles.length)image_urls=await uploadFiles(photoFiles,"images");if(videoFiles.length)video_urls=await uploadFiles(videoFiles,"videos");const row={category:$("category").value,make:$("make").value.trim(),model:$("model").value.trim(),year:$("year").value?Number($("year").value):null,hours:$("hours").value?Number($("hours").value):null,price:$("price").value?Number($("price").value):null,currency_symbol:$("currency_symbol").value,condition:$("condition").value.trim()||null,description:$("description").value.trim()||null,image_urls,video_urls,image_url:image_urls.length?image_urls[0]:null};if(!row.make||!row.model)throw new Error("Make and model are required.");const {error}=await client.from("equipment").insert(row);if(error)throw error;show(saveMsg,"Equipment saved successfully.");["make","model","year","hours","price","condition","description"].forEach(id=>$(id).value="");$("photos").value="";$("videos").value="";$("currency_symbol").value="$";await loadEquipment()}catch(err){show(saveMsg,err.message||"Something went wrong.",true)}};
+async function loadEquipment(){const list=$("equipmentList");list.textContent="Loading equipment...";const {data,error}=await client.from("equipment").select("*").order("created_at",{ascending:false});if(error){list.textContent="Could not load equipment: "+error.message;return}if(!data||data.length===0){list.innerHTML='<p class="small">No equipment listings yet.</p>';return}list.innerHTML="";data.forEach(item=>{const box=document.createElement("div");box.style.border="1px solid #e5e7eb";box.style.borderRadius="10px";box.style.padding="14px";box.style.marginTop="12px";const title=document.createElement("strong");title.textContent=(item.make||"")+" "+(item.model||"");box.appendChild(title);const info=document.createElement("p");info.className="small";const currency=item.currency_symbol||"$";info.textContent=[item.category,item.year?"Year "+item.year:"",item.hours?item.hours+" hours":"",item.price!=null?"Price: "+currency+Number(item.price).toLocaleString():""].filter(Boolean).join(" • ");box.appendChild(info);const images=Array.isArray(item.image_urls)&&item.image_urls.length?item.image_urls:(item.image_url?[item.image_url]:[]);images.forEach(url=>{const img=document.createElement("img");img.src=url;img.alt=title.textContent;img.style.width="100%";img.style.maxWidth="260px";img.style.borderRadius="8px";img.style.marginTop="8px";img.style.display="block";box.appendChild(img)});const videos=Array.isArray(item.video_urls)?item.video_urls:[];videos.forEach(url=>{const video=document.createElement("video");video.src=url;video.controls=true;video.style.width="100%";video.style.maxWidth="500px";video.style.marginTop="10px";video.style.borderRadius="8px";box.appendChild(video)});const del=document.createElement("button");del.textContent="DELETE";del.style.background="#b91c1c";del.onclick=()=>deleteEquipment(item);box.appendChild(del);list.appendChild(box)})}
+function getStoragePath(url){if(!url)return null;const marker="/storage/v1/object/public/equipment-images/";const pos=url.indexOf(marker);if(pos===-1)return null;return decodeURIComponent(url.slice(pos+marker.length))}
+async function deleteEquipment(item){if(!item||!item.id)return;if(!confirm("Delete this equipment listing? This cannot be undone."))return;const msg=$("listMsg");show(msg,"Deleting equipment...");const {error}=await client.from("equipment").delete().eq("id",item.id);if(error){show(msg,error.message||"Could not delete equipment.",true);return}const urls=[];if(Array.isArray(item.image_urls))urls.push(...item.image_urls);if(Array.isArray(item.video_urls))urls.push(...item.video_urls);if(item.image_url)urls.push(item.image_url);const paths=[...new Set(urls.map(getStoragePath).filter(Boolean))];if(paths.length)await client.storage.from("equipment-images").remove(paths);show(msg,"Equipment deleted successfully.");await loadEquipment()}
+async function startAdmin(){const ok=await checkAdmin();if(ok)await loadEquipment()}startAdmin();
+</script></body></html>
