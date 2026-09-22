@@ -188,7 +188,7 @@ async function loadEquipment(){
   const status=document.getElementById('equipmentStatus');
   const listings=document.getElementById('equipmentListings');
   status.textContent='Loading available equipment…';
-  const {data,error}=await supabaseClient.from('equipment').select('*,equipment_images(image_url,sort_order)').order('created_at',{ascending:false});
+  const {data,error}=await supabaseClient.from('equipment').select('*').order('created_at',{ascending:false});
   if(error){status.textContent='Equipment is temporarily unavailable. Please contact mechavon directly.'; console.error(error); return;}
   allEquipment=data||[];
   renderEquipment();
@@ -216,12 +216,12 @@ function renderEquipment(){
       return symbol+(Number.isFinite(n)?n.toLocaleString(undefined,{maximumFractionDigits:2}):String(item.price));
     };
     const price=formatPrice(item);
-    const photos=[...(item.equipment_images||[])].sort((a,b)=>(a.sort_order||0)-(b.sort_order||0)).map(x=>x.image_url).filter(Boolean);
+    const photos=Array.isArray(item.image_urls)?item.image_urls.filter(Boolean):(item.image_url?[item.image_url]:[]);
     if(item.image_url && !photos.includes(item.image_url)) photos.unshift(item.image_url);
     const img=photos[0]||'';
     const gallery=photos.length>1?`<div class="gallery-thumbs">${photos.map((url,i)=>`<img src="${url}" alt="${title} photo ${i+1}" loading="lazy" onclick="this.closest('.listing').querySelector('.main-photo').src=this.src">`).join('')}</div>`:'';
     const desc=(item.description||'').replace(/[<>]/g,'');
-    const videoUrls=[item.video_url,item.video_url_2].filter(Boolean).slice(0,2);
+    const videoUrls=Array.isArray(item.video_urls)?item.video_urls.filter(Boolean).slice(0,2):[];
     const video=videoUrls.length?`<div class="listing-videos"><div class="video-note">N/B: Videos are optional (up to 2).</div>${videoUrls.map((url,i)=>`<div class="video-item"><div class="video-label">Video ${i+1}</div><video class="listing-video" controls preload="metadata" src="${url}"></video></div>`).join('')}</div>`:'';
     const mailSubject=encodeURIComponent('mechavon inquiry: '+title);
     const mailBody=encodeURIComponent('Hello mechavon,\n\nI am interested in the '+title+' listed on your website.\n\nPlease send me more information, availability and pricing.');
